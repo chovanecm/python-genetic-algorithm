@@ -1,4 +1,4 @@
-# python-genetic-algorithm
+# mchgenalg
 Genetic algorithm "library"
 
 ## About the library
@@ -17,15 +17,15 @@ of maximizing the number of one-values in a vector.
 
 
 ```python
-from mch_genetic_algorithm import GeneticAlgorithm
+from mchgenalg import GeneticAlgorithm
 import numpy as np
 
 # First, define function that will be used to evaluate the fitness
 def fitness_function(genome):
-	# let's count the number of one-values in the genome
-	# this will be our fitness
-	sum = np.sum(genome)
-	return sum
+    # let's count the number of one-values in the genome
+    # this will be our fitness
+    sum = np.sum(genome)
+    return sum
 
 # Configure the algorithm:
 population_size = 10
@@ -39,8 +39,6 @@ ga.number_of_pairs = 5
 ga.selective_pressure = 1.5
 ga.mutation_rate = 0.1
 
-# Run 1000 iterations of the algorithm
-ga.run(1000)
 
 best_genome, best_fitness = ga.get_best_genome()
 

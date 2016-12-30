@@ -25,7 +25,7 @@ setup(
     long_description=long_description,
     license="MIT License",
     url="https://github.com/chovanecm/python-genetic-algorithm",
-    name="mch_genetic_algorithm",
+    name="mchgenalg",
     keywords="genetic algorithm",
     packages=find_packages(),
 #    entry_points={
@@ -34,7 +34,7 @@ setup(
 #        ]
 #    },
     install_requires=get_requirements(),
-    setup_requires=["numpy"],
+    #    setup_requires=["numpy"],
     tests_require=["pytest"],
     version="0.1"
 )
