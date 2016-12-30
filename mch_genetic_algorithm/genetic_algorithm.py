@@ -8,13 +8,12 @@ import numpy as np
 
 
 class GeneticAlgorithm():
-    def __init__(self, fitness_function, parallel_fitness_eval=False):
+    def __init__(self, fitness_function):
         self.population = None
         self.fitness_function = fitness_function
         self.number_of_pairs = None
         self.mutation_rate = 0.005
         self.selective_pressure = 1.5
-        self.parallel_fitness_eval=parallel_fitness_eval
 
     def generate_binary_population(self, size, genome_length):
         self.population = np.array([[not not x for x in line] for line in np.random.randint(0, 2, (size, genome_length))])
