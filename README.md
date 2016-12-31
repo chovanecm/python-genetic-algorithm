@@ -1,6 +1,8 @@
 # mchgenalg
 Genetic algorithm "library"
 
+Current version: 0.1
+
 ## About the library
 The "library" was created for a Czech Technical University's course "Problems and algorithms".
 
