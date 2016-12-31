@@ -9,6 +9,10 @@ It supports evolving individuals composed of fixed-length binary genomes.
 ## Installation
 Install the library:
 
+    pip install https://github.com/chovanecm/python-genetic-algorithm/archive/master.zip#egg=mchgenalg
+
+Or directly:
+
 	python setup.py install
 	
 ## Usage:
