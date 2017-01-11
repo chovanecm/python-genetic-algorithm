@@ -50,6 +50,12 @@ ga.allow_random_parent = True # default True
 # Use single point crossover instead of uniform crossover
 ga.single_point_cross_over = False # default False
 
+# Run 1000 iteration of the algorithm
+# You can call the method several times and adjust some parameters
+# (e.g. number_of_pairs, selective_pressure, mutation_rate,
+# allow_random_parent, single_point_cross_over)
+ga.run(1000)
+
 best_genome, best_fitness = ga.get_best_genome()
 
 # If you want, you can have a look at the population:
