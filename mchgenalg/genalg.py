@@ -14,12 +14,19 @@ class GeneticAlgorithm():
         self.number_of_pairs = None
         self.mutation_rate = 0.005
         self.selective_pressure = 1.5
+        # If two parents have the same genotype, ignore them and generate TWO random parents
+        self.allow_random_parent = True
+        # Use single point crossover instead of uniform crossover
+        self.single_point_cross_over = False
 
     def generate_binary_population(self, size, genome_length):
         self.population = np.array([[not not x for x in line] for line in np.random.randint(0, 2, (size, genome_length))])
         self._update_fitness_vector()
         return self.population
 
+    def _generate_individual(self, genome_length):
+        return np.random.randint(0, 2, (genome_length), dtype=bool
+                                 )
     def get_fitness_vector(self):
         return self.fitness_vector
 
@@ -59,11 +66,29 @@ class GeneticAlgorithm():
                          * (ranks_asc[-i] - 1) / (len(ranks_asc) - 1) for i in range(len(ranks_asc))])
 
     def _generate_children(self, parent_pair):
-        parent1 = self.population[parent_pair[0]]
-        parent2 = self.population[parent_pair[1]]
-        cutAfter = np.random.randint(0, len(self.population[0]) - 1)
-        return (np.concatenate((parent1[0:cutAfter + 1], parent2[cutAfter + 1:])),
-                np.concatenate((parent2[0:cutAfter + 1], parent1[cutAfter + 1:])))
+        parent1 = parent_pair[0]
+        parent2 = parent_pair[1]
+        if self.single_point_cross_over:
+            cutAfter = np.random.randint(0, len(self.population[0]) - 1)
+            # Concatenate returns two arrays joined together as a new array
+            return (np.concatenate((parent1[0:cutAfter + 1], parent2[cutAfter + 1:])),
+                    np.concatenate((parent2[0:cutAfter + 1], parent1[cutAfter + 1:])))
+        else:
+            # Uniform crossover:
+            # randomly generated values smaller than prob => take bit from the first parent to the first child,
+            # >=0.5 take from the second parent to the first child
+            threshold = 0.5
+            prob = np.random.rand(len(parent1))
+            children = np.ndarray((2, len(parent1)), dtype=bool)
+            mask1 = prob < threshold
+            mask2 = np.invert(mask1)
+            children[0, mask1] = parent1[mask1]
+            children[0, mask2] = parent2[mask2]
+            children[1, mask1] = parent2[mask1]
+            children[1, mask2] = parent1[mask2]
+
+            return tuple(children)
+
 
     def _select_parents(self, number_of_pairs, parent_probabilities):
         """
@@ -77,26 +102,36 @@ class GeneticAlgorithm():
         """
         parent_pairs = []
         for pair in range(number_of_pairs):
+            parents_idx = []
             parents = []
-            while len(parents) != 2:
+            while len(parents_idx) != 2:
                 rnd = np.random.rand()
                 for i in range(len(parent_probabilities)):
                     p = parent_probabilities[i]
                     if rnd < p:
-                        parents.append(i)
-                        if (len(parents) == 2):
+                        parents_idx.append(i)
+                        parents.append(self.population[i].copy())
+                        # If have a pair, we are done
+                        if (len(parents_idx) == 2):
                             break
-                        #Normalise probability
+                        # Normalise probability in order to select the other parent as a mate
                         parent_probabilities += p / (len(parent_probabilities) - 1)
                         parent_probabilities[i] = 0
-                        firstParentProbability = p  # will be returned afterwards
+                        # We will return the probability at the end of the while loop
+                        firstParentProbability = p
                         break
                     else:
                         rnd -= p
-            # set the probabilities back
+            # The probability of the first parent was set to 0 during searching its mate
+            # Set it back:
             parent_probabilities -= firstParentProbability / (len(parent_probabilities) - 1)
-            parent_probabilities[parents[0]] = firstParentProbability
+            parent_probabilities[parents_idx[0]] = firstParentProbability
+            if self.allow_random_parent and np.all(parents[0] == parents[1]):
+                parents[0] = self._generate_individual(len(parents[0]))
+                parents[1] = self._generate_individual(len(parents[1]))
             parent_pairs.append(parents)
+
+            # With this solution, it may happen that we have many pairs of the same pair :(
         return parent_pairs
 
     def _mutate(self, genome, mutation_rate):
