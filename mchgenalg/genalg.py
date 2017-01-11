@@ -14,7 +14,7 @@ class GeneticAlgorithm():
         self.number_of_pairs = None
         self.mutation_rate = 0.005
         self.selective_pressure = 1.5
-        # If two parents have the same genotype, generate a random parent.
+        # If two parents have the same genotype, ignore them and generate TWO random parents
         self.allow_random_parent = True
         # Use single point crossover instead of uniform crossover
         self.single_point_cross_over = False
@@ -127,6 +127,7 @@ class GeneticAlgorithm():
             parent_probabilities -= firstParentProbability / (len(parent_probabilities) - 1)
             parent_probabilities[parents_idx[0]] = firstParentProbability
             if self.allow_random_parent and np.all(parents[0] == parents[1]):
+                parents[0] = self._generate_individual(len(parents[0]))
                 parents[1] = self._generate_individual(len(parents[1]))
             parent_pairs.append(parents)
 
