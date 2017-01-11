@@ -1,7 +1,7 @@
 # mchgenalg
 Genetic algorithm "library"
 
-Current version: 0.1
+Current version: 0.2
 
 ## About the library
 The "library" was created for a Czech Technical University's course "Problems and algorithms".
@@ -44,7 +44,11 @@ ga.number_of_pairs = 5
 # the lower value, the less will the fitness play role
 ga.selective_pressure = 1.5
 ga.mutation_rate = 0.1
-
+# If two parents have the same genotype, ignore them and generate TWO random parents
+# This helps preventing premature convergence
+ga.allow_random_parent = True # default True
+# Use single point crossover instead of uniform crossover
+ga.single_point_cross_over = False # default False
 
 best_genome, best_fitness = ga.get_best_genome()
 
@@ -53,3 +57,16 @@ population = ga.population
 # and the fitness of each element:
 fitness_vector = ga.get_fitness_vector()
 ```
+
+
+### Signle-point crossover vs uniform crossover [from Wikipedia]
+A single crossover point on both parents' organism strings is selected. All data beyond that point in either organism string is swapped between the two parent organisms. The resulting organisms are the children:
+
+![Single-point crossover](https://upload.wikimedia.org/wikipedia/commons/5/56/OnePointCrossover.svg "Single-point crossover")
+ 
+The uniform crossover uses a fixed mixing ratio between two parents. Unlike single- and two-point crossover, the uniform crossover enables the parent chromosomes to contribute the gene level rather than the segment level.
+If the mixing ratio is 0.5, the offspring has approximately half of the genes from first parent and the other half from second parent, although cross over points can be randomly chosen as seen below:
+
+![Uniform crossover](https://upload.wikimedia.org/wikipedia/commons/8/8f/UniformCrossover.png "Uniform crossover")
+
+The mixing ratio in mchgenalg is 0.5.
